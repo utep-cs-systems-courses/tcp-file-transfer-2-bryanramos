@@ -1,5 +1,10 @@
 #! /usr/bin/env python3
 
+# Author: Bryan Ramos
+# Course: Theory of Operating Systems (OS)
+# Instructors: Eric Freudenthal and David Pruitt
+# Assignment: Lab 2 - TCP File Transfer
+
 import os, socket, sys
 
 sys.path.append("../lib") # for params
@@ -15,11 +20,11 @@ def server():
         (('d', '--debug'), 'debug', False),
     )
 
-    parameterMap = params.parseParams(switchesVarDefaults);
+    parameterMap = params.parseParams(switchesVarDefaults)
     listenPort, debug = parameterMap['listenPort'], parameterMap['debug']
 
     if parameterMap['usage']:
-        params.usage();
+        params.usage()
 
     # create a listening socket
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
