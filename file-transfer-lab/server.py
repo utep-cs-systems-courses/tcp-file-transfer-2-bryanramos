@@ -5,7 +5,7 @@ import os, socket, sys
 sys.path.append("../lib") # for params
 import params
 
-FILES_PATH = "/Receive"
+FILES_PATH = "./Receive"
 HOST = "127.0.0.1"
 
 def server():
@@ -21,35 +21,46 @@ def server():
     if parameterMap['usage']:
         params.usage();
 
-    bindAddr = (HOST, listenPort)
-
     # create a listening socket
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # associating socket with host and port number
-        s.bind(bindAddr)
+        s.bind((HOST, listenPort))
 
         # makes s the listening socket
         s.listen()
-        print("Listening on: ", bindAddr)
+        print("Listening on: ", (HOST, listenPort))
 
         connection, address = s.accept() # wait until incoming connection request (and accept it)
 
         os.chdir(FILES_PATH) # switch to directory to receive files
 
+        # based on demos
         with connection:
-            print("Connected by", addr)
+            print("Connected by", address)
             while 1:
                 # receive file name first
-                data = connection.recv(1024).decode()
+                data = connection.recv(1024)
+                decodedData = data.decode()
 
                 # if file name was given
-                if data:
-                    write_file(data, connection)
+                if decodedData:
+                    writeFile(decodedData, connection)
                 
                 if not data:
                     break;
                 
-                connection.sendAll(data)
+                connection.sendall(data)
+
+def writeFile(fileName, connection):
+    # create file to write 
+    writer = open(fileName, 'wb') # write and binary
+
+    # write, receive data
+    data = connection.recv(1024)
+    writer.write(data)
+
+    writer.close() # close, always good practice to close things when done :)
+    print("File %s received :)" % fileName) 
 
 if __name__ == "__main__":
     server()
