@@ -11,7 +11,7 @@ sys.path.append("../lib") # for params
 import params
 from framedSock import framedSend, framedReceive
 
-FILES_PATH = "Send/"
+PATH = "Send/"
 
 def client():
     switchesVarDefaults = (
@@ -49,8 +49,8 @@ def client():
         else:
             if not fileName:
                 continue
-            elif os.path.exists(FILES_PATH + fileName):
-                f = open(FILES_PATH + fileName, "rb") # read and binary
+            elif os.path.exists(PATH + fileName):
+                f = open(PATH + fileName, "rb") # read and binary
                 contents = f.read()
 
                 if len(contents) < 1:
@@ -62,11 +62,12 @@ def client():
                 status = int(listenSocket.recv(1024).decode())
 
                 if status:
-                    print("File Transfer Error: File %s was not received by server." % fileName)
-                    sys.exit(1)
-                else:
                     print("File %s received by server." % fileName)
                     sys.exit(0)
+                else:
+                    print("File Transfer Error: File %s was not received by server." % fileName)
+                    sys.exit(1)
+
 
             else:
                 print("File Not Found Error: File %s not found!" % fileName)

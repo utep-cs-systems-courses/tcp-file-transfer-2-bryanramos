@@ -64,7 +64,7 @@ def server():
             writeFile(connection, address, fileName, contents)
 
             # return message of success
-            connection.sendall(str(0).encode())
+            connection.sendall(str(1).encode())
             sys.exit(0)
 
 def writeFile(connection, address, fileName, contents):
