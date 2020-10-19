@@ -2,14 +2,15 @@
 
 import re
 
-    class __init__(self, sockAddress):              # a facade
+class EncapFramedSock:                              # a facade
+    def __init__(self, sockAddress):              
         self.sock, self.address = sockAddress
         self.rbuf = b""                             # receive buffer
 
     def close(self):
         return self.sock.close()
 
-    def send(self, payload, debugPrint = 0)"
+    def send(self, payload, debugPrint = 0):
         if debugPrint:
             print("framedSend: sending %d byte message" % len(payload))
         msg = str(len(payload)).encode() + b':' + payload
@@ -21,7 +22,7 @@ import re
         state = "getLength"
         msgLength = -1
         while True:
-            
+
             if (state == "getLength"):
                 match = re.match(b'([^:]+):(.*)', self.rbuf, re.DOTALL | re.MULTILINE) # look for colon
                 if match:
