@@ -40,7 +40,7 @@ def client():
     listenSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listenSocket.connect(port)
 
-    while True:
+    while 1:
         fileName = input("> ")
         fileName.strip()
 
