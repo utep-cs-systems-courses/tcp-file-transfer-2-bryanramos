@@ -21,7 +21,6 @@ def client():
     )
 
     # based on demos
-
     parameterMap = params.parseParams(switchesVarDefaults);
     server, usage, debug = parameterMap['server'], parameterMap['usage'], parameterMap['debug']
 
@@ -41,7 +40,7 @@ def client():
     listenSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listenSocket.connect(port)
 
-    while 1:
+    while True:
         fileName = input("> ")
         fileName.strip()
 
@@ -62,16 +61,13 @@ def client():
                 # check if server was able to receive the file
                 status = int(listenSocket.recv(1024).decode())
 
-
-                print(status)
-
                 if status:
-                    print("File %s received by server." % fileName)
-                    sys.exit(0)
-                else:
                     print("File Transfer Error: File %s was not received by server." % fileName)
                     sys.exit(1)
-                    
+                else:
+                    print("File %s received by server." % fileName)
+                    sys.exit(0)
+
             else:
                 print("File Not Found Error: File %s not found!" % fileName)
 

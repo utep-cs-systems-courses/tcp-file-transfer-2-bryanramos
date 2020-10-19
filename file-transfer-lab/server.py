@@ -11,7 +11,7 @@ sys.path.append("../lib") # for params
 import params
 from framedSock import framedReceive
 
-FILES_PATH = "./Receive"
+PATH = "./Receive"
 HOST = "127.0.0.1"
 
 def server():
@@ -27,49 +27,52 @@ def server():
     if parameterMap['usage']:
         params.usage()
 
-    bindAddr = (HOST, listenPort)
+    bindAddress = (HOST, listenPort)
 
     # creating listening socket
     listenSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    listenSocket.bind(bindAddr)
+    listenSocket.bind(bindAddress)
 
-    listenSocket.listen(10)
-    print("Listening on: ", bindAddr)
+    listenSocket.listen(10) # 10 connections
+    print("Listening on: ", bindAddress)
 
-    # check if directory exists to receive files, if not, create it, then move to it
-    if not os.path.exists(FILES_PATH):
-        os.makedirs(FILES_PATH)
-    os.chdir(FILES_PATH)
+    # check if dir exists to receive files, if not, create it anyway, then move to it
+    if not os.path.exists(PATH):
+        os.makeidrs(PATH)
+    os.chdir(PATH)
 
-    while True:
+    while 1:
         connection, address = listenSocket.accept()
 
+        # if no connection or no address, get out of there 
         if not connection or not address:
             sys.exit(1)
-        
-        if not os.fork():
-            print("Connected by", address)
 
-            # receive files from client
+        if not os.fork():
+            print("Connected by: ", address)
+
+            # receive files from client connection
             try:
                 fileName, contents = framedReceive(connection, debug)
             except:
-                print("Errot: File transfer was not successful!")
-                connection.sendall(str(0).encode())
+                print("Error: File transfer was not successful!")
+                connection.sendAll(str(0).encode())
                 sys.exit(1)
-
-            # try saving the files in receive folder
+            
+            # save files to 'receive' dir
             fileName = fileName.decode()
             writeFile(connection, address, fileName, contents)
 
-            # send message of success
-            connection.sendall(str(1).encode())
+            # return message of success
+            connection.sendall(str(0).encode())
             sys.exit(0)
 
 def writeFile(connection, address, fileName, contents):
-    if connection is None: 
+
+    # check for null values
+    if connection is None:
         raise TypeError
-    if address is None: 
+    if address is None:
         raise TypeError
     if fileName is None:
         raise TypeError
@@ -81,7 +84,7 @@ def writeFile(connection, address, fileName, contents):
         writer = open(fileName, 'w+b') # write and binary
         writer.write(contents)
         writer.close() # close, always good practice to close things when done :)
-
+        # show the user a message
         print("File %s received from %s" % (fileName, address))
     except FileNotFoundError:
         print("File Not Found Error: File %s not found" % fileName)
