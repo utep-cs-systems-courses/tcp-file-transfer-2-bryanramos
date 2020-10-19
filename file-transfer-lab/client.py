@@ -11,7 +11,7 @@ sys.path.append("../lib") # for params
 import params
 from framedSock import framedSend, framedReceive
 
-PATH_FILES = "Send/"
+FILES_PATH = "Send/"
 
 def client():
     switchesVarDefaults = (
