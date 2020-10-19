@@ -38,7 +38,7 @@ def server():
 
     # check if dir exists to receive files, if not, create it anyway, then move to it
     if not os.path.exists(PATH):
-        os.makeidrs(PATH)
+        os.makedirs(PATH)
     os.chdir(PATH)
 
     while 1:
