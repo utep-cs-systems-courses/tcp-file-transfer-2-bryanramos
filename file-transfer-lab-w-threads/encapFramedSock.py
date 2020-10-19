@@ -1,19 +1,20 @@
 # based on encapFramedSock from nets-tcp-framed-echo-threads repo for OS class
+# https://github.com/robustUTEP/nets-tcp-framed-echo-threads/blob/master/framed-echo/framedThreadServer.py
 
 import re
 
-class EncapFramedSock:                              # a facade
-    def __init__(self, sockAddress):              
+class EncapFramedSock:  # a facade
+    def __init__(self, sockAddress):
         self.sock, self.address = sockAddress
-        self.rbuf = b""                             # receive buffer
+        self.rbuf = b""  # receive buffer
 
     def close(self):
         return self.sock.close()
 
-    def send(self, payload, debugPrint = 0):
-        if debugPrint:
-            print("framedSend: sending %d byte message" % len(payload))
-        msg = str(len(payload)).encode() + b':' + payload
+    def send(self, fileName, payload, debugPrint=0):
+        if debugPrint: print("framedSend: sending %d byte message" % len(payload))
+        msg = str(len(payload)).encode() + b':' + fileName.encode() + b':' + payload
+
         while len(msg):
             nsent = self.sock.send(msg)
             msg = msg[nsent:]
@@ -21,32 +22,42 @@ class EncapFramedSock:                              # a facade
     def receive(self, debugPrint=0):
         state = "getLength"
         msgLength = -1
-        while True:
 
+        while True:
             if (state == "getLength"):
-                match = re.match(b'([^:]+):(.*)', self.rbuf, re.DOTALL | re.MULTILINE) # look for colon
+                match = re.match(b'([^:]+):(.*):(.*)', self.rbuf, re.DOTALL | re.MULTILINE)  # look for colon
                 if match:
-                    lengthStr, self.rbuf = match.groups()
-                    try: 
+                    lengthStr, fileName, self.rbuf = match.groups()
+                    try:
                         msgLength = int(lengthStr)
                     except:
                         if len(self.rbuf):
                             print("badly formed message length:", lengthStr)
-                            return None
+                            return None, None
                     state = "getPayload"
-
             if state == "getPayload":
                 if len(self.rbuf) >= msgLength:
                     payload = self.rbuf[0:msgLength]
                     self.rbuf = self.rbuf[msgLength:]
-                    return payload
+                    return fileName, payload
 
             r = self.sock.recv(100)
             self.rbuf += r
 
             if len(r) == 0:
                 if len(self.rbuf) != 0:
-                    print("FramedReceive: incomplete message. \n state=%s, length=%d, self.rbuf=%s" % (state, msgLength, self.rbuf))
-                return None
-
+                    print("FramedReceive: incomplete message. \n state=%s, length=%d, self.rbuf=%s" % (
+                    state, msgLength, self.rbuf))
+                return None, None
             if debugPrint: print("FramedReceive: state=%s, length=%d, self.rbuf=%s" % (state, msgLength, self.rbuf))
+
+    def sendStatus(self, status, debugPrint=0):
+
+        if debugPrint:
+            print("framedSend: sending status %s" % str(status))
+        # sending status first
+        self.sock.sendall(str(status).encode())
+
+    def Status(self):
+        status = self.sock.recv(128)
+        return status
