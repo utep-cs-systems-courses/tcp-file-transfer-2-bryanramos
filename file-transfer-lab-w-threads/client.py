@@ -43,7 +43,7 @@ def client():
     encapSocket = EncapFramedSock((listenSocket, port))
 
     while 1:
-        fileName = input("> ")
+        fileName = input("Enter a filename > ")
         fileName.strip()
 
         if fileName == "exit": # terminate

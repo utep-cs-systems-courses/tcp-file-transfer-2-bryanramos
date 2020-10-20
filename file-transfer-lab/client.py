@@ -25,7 +25,7 @@ def client():
     server, usage, debug = parameterMap['server'], parameterMap['usage'], parameterMap['debug']
 
     if usage:
-        params.usage();
+        params.usage()
 
     try:
         serverHost, serverPort = re.split(":", server)
@@ -41,7 +41,7 @@ def client():
     listenSocket.connect(port)
 
     while 1:
-        fileName = input("> ")
+        fileName = input("Enter a filename > ")
         fileName.strip()
 
         if fileName == "exit": # terminate
@@ -67,7 +67,6 @@ def client():
                 else:
                     print("File Transfer Error: File %s was not received by server." % fileName)
                     sys.exit(1)
-
 
             else:
                 print("File Not Found Error: File %s not found!" % fileName)

@@ -1,4 +1,4 @@
-# File Transfer Lab
+# File Transfer Lab w/ Threads
 
 Author: Bryan Ramos
 
@@ -7,6 +7,8 @@ Author: Bryan Ramos
 * Does not allow empty files to be sent to the server by clients.
 * File overwrite for already existing files, per the requirements, we were allowed to handle that how we wanted to.
 * Sever can run w/o a proxy.
+* This version implements locks when several clients try to send files simulatenously.
+* Implemented with Threads using guidance from demo code and lecture notes.
 
 This can run on WSL and Linux.
 
