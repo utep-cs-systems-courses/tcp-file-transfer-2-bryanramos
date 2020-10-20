@@ -72,7 +72,6 @@ def client():
                     print("File Transfer Error: File %s was not received by server." % fileName)
                     sys.exit(1)
                     
-
             else:
                 print("File Not Found Error: File %s not found!" % fileName)
 

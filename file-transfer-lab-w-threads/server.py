@@ -80,6 +80,7 @@ class Server(Thread):
 
     def writeFile(self, fileName, contents):
 
+        # check for null values
         if fileName is None:
             raise TypeError
         if contents is None:
@@ -103,11 +104,8 @@ class Server(Thread):
             self.fsock.Status(0, debug)
             sys.exit(1)
 
-def main():
+if __name__ == "__main__":
     while 1:
         sockAddress = listenSocket.accept()
         server = Server(sockAddress)
         server.start()
-
-if __name__ == "__main__":
-    main()
